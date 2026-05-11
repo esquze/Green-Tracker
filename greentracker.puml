@@ -1,0 +1,55 @@
+@startuml
+title Klassendiagramm - GreenDash (CO2 & Energie Tracker)
+
+class User {
+    - Long id
+    - String username
+    - String email
+    - String password
+    + getCarbonFootprintTotal()
+}
+
+class ConsumptionEntry {
+    - Long id
+    - LocalDate date
+    - Double value
+    - String unit
+    - Double calculatedCo2
+    + calculateCo2()
+}
+
+class Category {
+    - Long id
+    - String name
+    - Double co2Factor
+    - String icon
+}
+
+enum EntryType {
+    STROM
+    WASSER
+    VERKEHR
+    HEIZUNG
+    ERNÄHRUNG
+}
+
+class Goal {
+    - Long id
+    - String description
+    - Double targetValue
+    - LocalDate deadline
+    - boolean isReached
+}
+
+User "1" -- "0..*" ConsumptionEntry : erfasst >
+User "1" -- "0..*" Goal : setzt sich >
+ConsumptionEntry "0..*" -- "1" Category : gehört zu >
+Category -- EntryType : typisiert durch >
+
+note right of ConsumptionEntry
+  Beispiel:
+  value: 50, unit: "km"
+  calculatedCo2 = value * category.co2Factor
+end note
+
+@enduml
