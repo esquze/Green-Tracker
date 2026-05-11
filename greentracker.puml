@@ -1,55 +1,115 @@
 @startuml
-title Klassendiagramm - GreenDash (CO2 & Energie Tracker)
+'https://plantuml.com/class-diagram
 
-class User {
-    - Long id
-    - String username
-    - String email
-    - String password
-    + getCarbonFootprintTotal()
+skinparam classAttributeIconSize 0
+
+class GreenTrackerException
+{
++ GreenTrackerException(message: String)
 }
 
-class ConsumptionEntry {
-    - Long id
-    - LocalDate date
-    - Double value
-    - String unit
-    - Double calculatedCo2
-    + calculateCo2()
+Exception <|-- GreenTrackerException
+
+interface Comparable<Verbrauch>
+{
++ {abstract} compareTo(o: Verbrauch): int
 }
 
-class Category {
-    - Long id
-    - String name
-    - Double co2Factor
-    - String icon
+Comparable <|.. Verbrauch
+
+class Wasserverbrauch extends Verbrauch
+{
+- aktuellerWasserPreis: double
+- kubikmeternVerbrauchWasser: double
++ Wasserverbrauch(aktuellerWasserPreis: double,kubikmeternVerbrauchWasser: double)
++ getAktuellerWasserPreis(): double
++ getKubikmeternVerbrauchWasser(): double
++ preis(): double
++ ausstoß(): double
++ setAktuellerWasserPreis(aktuellerWasserPreis: double): void
++ setKubikmeternVerbrauchWasser(kubikmeternVerbrauchWasser: double): void
++ toString(): String
 }
 
-enum EntryType {
-    STROM
-    WASSER
-    VERKEHR
-    HEIZUNG
-    ERNÄHRUNG
+class GasVerbrauch extends Verbrauch
+{
+- aktuellerGasPreis: double
+- kubikmeternVerbrauchGas: double
++ Wasserverbrauch(aktuellerGasPreis: double,kubikmeternVerbrauchGas: double)
++ getAktuellerWasserPreis(): double
++ getKubikmeternVerbrauchGas(): double
++ preis(): double
++ ausstoß(): double
++ setAktuellerGasPreis(aktuellerGasPreis: double): void
++ setKubikmeternVerbrauchGas(kubikmeternVerbrauchGas: double): void
++ toString(): String
 }
 
-class Goal {
-    - Long id
-    - String description
-    - Double targetValue
-    - LocalDate deadline
-    - boolean isReached
+class StromVerbrauch extends Verbrauch{
+- aktuellerStromPreis: double
+- kilowattstunden: double
++ StromVerbrauch(aktuellerStromPreis: double,kilowattstunden: double)
++ getAktuellerStromPreis(): double
++ getKilowattstunden(): double
++ preis(): double
++ ausstoß(): double
++ setAktuellerStromPreis(aktuellerStromPreis: double): void
++ setKilowattstunden(kilowattstunden: double): void
++ toString(): String
 }
 
-User "1" -- "0..*" ConsumptionEntry : erfasst >
-User "1" -- "0..*" Goal : setzt sich >
-ConsumptionEntry "0..*" -- "1" Category : gehört zu >
-Category -- EntryType : typisiert durch >
+abstract class Verbrauch
+{
+- taetigkeit: String
+- dauer: double
+- anzahlTeatigkeit: int
++ Verbrauch()
++ Verbrauch(taetigkeit: String, dauer: double, anzahlTeatigkeit: int)
++ getTaetigkeit(): String
++ getDauer(): double
++ getAnzahlTeatigkeit(): int
++ setTaetigkeit(taetigkeit: String): void
++ setDauer(dauer: double): void
++ setAnzahlTeatigkeit(anzahlTeatigkeit: int): void
++ {abstract} preis(): double
++ {abstract} ausstoß(): double
++ toString(): String
+}
 
-note right of ConsumptionEntry
-  Beispiel:
-  value: 50, unit: "km"
-  calculatedCo2 = value * category.co2Factor
-end note
+class GreenTracker
+{
+- name: String
+- verbauche: List<Verbrauch>
++ GreenTracker(name: String)
++ getVerbrauch(index: int): Verbrauch
++ hinzufuegen(verbauch: Verbrauch): boolean
++ entfernen(verbauch: Verbrauch): boolean
++ entfernen(bezeichnung: String): int
++ berechneGesamtEmisson(): double
++ berechneVerbrauchEmisson(): double
++ berechneGesamtPreis(): double
++ berechneVerbrauchPreis(): double
++ writeVerbraucheToCSV(): void
++ save(): void
++ readVerbraucheFromCSV(): void
++ sortieren(): void
++ sortierenNachBezeichnung(): void
++ toString(): String
++ toCSVString(): String
+}
+
+GreenTracker --> Verbrauch
+
+together{
+class Verbrauch
+class GreenTracker
+}
+GreenTracker -[hidden] Verbrauch
+
+together{
+class GreenTracker
+class GreenTrackerException
+}
+GreenTrackerException -[hidden] GreenTracker
 
 @enduml
