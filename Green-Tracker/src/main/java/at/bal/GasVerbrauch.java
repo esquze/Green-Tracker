@@ -4,9 +4,15 @@ package at.bal;
 // toString
 // CSVString
 
+import java.util.List;
 import java.util.Objects;
 
 public class GasVerbrauch extends Verbrauch {
+
+    // FixList
+    public static final List<String> vorgeschlageneTaetigkeiten = List.of(
+            "Kochen", "Heizen", "Warmwasser", "Trocknen"
+    );
 
     private double aktuellerGasPreis;
     private double kubikmeternVerbrauchGas;

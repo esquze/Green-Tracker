@@ -4,8 +4,6 @@ package at.bal;
 // toString
 // CSVString
 // compareTo
-// fixTaetigkeiten
-// AnzahlTaetigkeiten
 
 import java.util.Objects;
 

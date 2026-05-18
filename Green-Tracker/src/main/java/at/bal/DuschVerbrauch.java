@@ -4,7 +4,14 @@ package at.bal;
 // toString
 // CSVString
 
+import java.util.List;
+
 public class DuschVerbrauch extends WasserVerbrauch {
+
+    // FixList
+    public static final List<String> vorgeschlageneTaetigkeiten = List.of(
+            "Duschen", "Baden"
+    );
 
     private GasVerbrauch zugeordneterGasVerbrauch;
 

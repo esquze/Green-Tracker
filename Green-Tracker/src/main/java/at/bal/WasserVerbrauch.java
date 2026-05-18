@@ -4,9 +4,15 @@ package at.bal;
 // toString
 // CSVString
 
+import java.util.List;
 import java.util.Objects;
 
 public class WasserVerbrauch extends Verbrauch {
+
+    // FixList
+    public static final List<String> vorgeschlageneTaetigkeiten = List.of(
+            "Duschen", "Hände waschen", "Geschirrspülen", "Auto waschen", "Waschmaschine"
+    );
 
     private double aktuellerWasserPreis;
     private double kubikmeternVerbrauchWasser;

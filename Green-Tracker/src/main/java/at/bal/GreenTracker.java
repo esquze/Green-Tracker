@@ -100,4 +100,14 @@ public class GreenTracker {
         return summe;
     }
 
+    public int anzahlTaetigkeiten(String taetigkeit) {
+        int anzahl = 0;
+        for (Verbrauch v: verbrauche) {
+            if (v.getTaetigkeit().equals(taetigkeit)) {
+                anzahl++;
+            }
+        }
+        return anzahl;
+    }
+
 }

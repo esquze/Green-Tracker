@@ -4,9 +4,15 @@ package at.bal;
 // toString
 // CSVString
 
+import java.util.List;
 import java.util.Objects;
 
 public class StromVerbrauch extends Verbrauch {
+
+    // FixList
+    public static final List<String> vorgeschlageneTaetigkeiten = List.of(
+            "Computer", "Fernseher", "Waschmaschine", "Licht", "Kühlschrank"
+    );
 
     private double aktuellerStromPreis;
     private double kilowattProStunden;
