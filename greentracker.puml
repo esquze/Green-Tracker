@@ -17,11 +17,33 @@ interface Comparable<Verbrauch>
 
 Comparable <|.. Verbrauch
 
+abstract class Verbrauch
+{
+- taetigkeit: String
+- dauer: double
+- anzahlTaetigkeit: int
++ Verbrauch()
++ Verbrauch(taetigkeit: String, dauer: double, anzahlTaetigkeit: int)
++ getTaetigkeit(): String
++ getDauer(): double
++ getAnzahlTaetigkeit(): int
++ setTaetigkeit(taetigkeit: String): void
++ setDauer(dauer: double): void
++ setAnzahlTaetigkeit(anzahlTaetigkeit: int): void
++ {abstract} preis(): double
++ {abstract} ausstoß(): double
++ toString(): String
++ {abstract} toCSVString(): String
++ compareTo(o: Verbrauch): int
++ equals(o: Object): boolean
++ hashCode(): int
+}
+
 class Wasserverbrauch extends Verbrauch
 {
 - aktuellerWasserPreis: double
 - kubikmeternVerbrauchWasser: double
-+ Wasserverbrauch(aktuellerWasserPreis: double,kubikmeternVerbrauchWasser: double)
++ Wasserverbrauch(taetigkeit: String, dauer: double, anzahlTaetigkeit: int, aktuellerWasserPreis: double, kubikmeternVerbrauchWasser: double)
 + getAktuellerWasserPreis(): double
 + getKubikmeternVerbrauchWasser(): double
 + preis(): double
@@ -29,26 +51,33 @@ class Wasserverbrauch extends Verbrauch
 + setAktuellerWasserPreis(aktuellerWasserPreis: double): void
 + setKubikmeternVerbrauchWasser(kubikmeternVerbrauchWasser: double): void
 + toString(): String
++ toCSVString(): String
++ equals(o: Object): boolean
++ hashCode(): int
 }
 
 class GasVerbrauch extends Verbrauch
 {
 - aktuellerGasPreis: double
 - kubikmeternVerbrauchGas: double
-+ Wasserverbrauch(aktuellerGasPreis: double,kubikmeternVerbrauchGas: double)
-+ getAktuellerWasserPreis(): double
++ GasVerbrauch(taetigkeit: String, dauer: double, anzahlTaetigkeit: int, aktuellerGasPreis: double, kubikmeternVerbrauchGas: double)
++ getAktuellerGasPreis(): double
 + getKubikmeternVerbrauchGas(): double
 + preis(): double
 + ausstoß(): double
 + setAktuellerGasPreis(aktuellerGasPreis: double): void
 + setKubikmeternVerbrauchGas(kubikmeternVerbrauchGas: double): void
 + toString(): String
++ toCSVString(): String
++ equals(o: Object): boolean
++ hashCode(): int
 }
 
-class StromVerbrauch extends Verbrauch{
+class StromVerbrauch extends Verbrauch
+{
 - aktuellerStromPreis: double
 - kilowattstunden: double
-+ StromVerbrauch(aktuellerStromPreis: double,kilowattstunden: double)
++ StromVerbrauch(taetigkeit: String, dauer: double, anzahlTaetigkeit: int, aktuellerStromPreis: double, kilowattstunden: double)
 + getAktuellerStromPreis(): double
 + getKilowattstunden(): double
 + preis(): double
@@ -56,34 +85,33 @@ class StromVerbrauch extends Verbrauch{
 + setAktuellerStromPreis(aktuellerStromPreis: double): void
 + setKilowattstunden(kilowattstunden: double): void
 + toString(): String
++ toCSVString(): String
++ equals(o: Object): boolean
++ hashCode(): int
 }
 
-abstract class Verbrauch
+class Duschverbrauch extends Wasserverbrauch
 {
-- taetigkeit: String
-- dauer: double
-- anzahlTeatigkeit: int
-+ Verbrauch()
-+ Verbrauch(taetigkeit: String, dauer: double, anzahlTeatigkeit: int)
-+ getTaetigkeit(): String
-+ getDauer(): double
-+ getAnzahlTeatigkeit(): int
-+ setTaetigkeit(taetigkeit: String): void
-+ setDauer(dauer: double): void
-+ setAnzahlTeatigkeit(anzahlTeatigkeit: int): void
-+ {abstract} preis(): double
-+ {abstract} ausstoß(): double
+- zugeordneterGasVerbrauch: GasVerbrauch
++ Duschverbrauch(taetigkeit: String, dauer: double, anzahlTaetigkeit: int, aktuellerWasserPreis: double, kubikmeternVerbrauchWasser: double, zugeordneterGasVerbrauch: GasVerbrauch)
++ getZugeordneterGasVerbrauch(): GasVerbrauch
++ setZugeordneterGasVerbrauch(zugeordneterGasVerbrauch: GasVerbrauch): void
++ preis(): double
++ ausstoß(): double
 + toString(): String
++ toCSVString(): String
++ equals(o: Object): boolean
++ hashCode(): int
 }
 
 class GreenTracker
 {
 - name: String
-- verbauche: List<Verbrauch>
+- verbrauche: List<Verbrauch>
 + GreenTracker(name: String)
 + getVerbrauch(index: int): Verbrauch
-+ hinzufuegen(verbauch: Verbrauch): boolean
-+ entfernen(verbauch: Verbrauch): boolean
++ hinzufuegen(verbrauch: Verbrauch): boolean
++ entfernen(verbrauch: Verbrauch): boolean
 + entfernen(bezeichnung: String): int
 + berechneGesamtEmisson(): double
 + berechneVerbrauchEmisson(): double
@@ -99,17 +127,18 @@ class GreenTracker
 }
 
 GreenTracker --> Verbrauch
+Duschverbrauch --> GasVerbrauch
 
-together{
+together {
 class Verbrauch
 class GreenTracker
 }
 GreenTracker -[hidden] Verbrauch
 
-together{
+together {
 class GreenTracker
 class GreenTrackerException
 }
-GreenTrackerException -[hidden] GreenTracker
+GreenTrackerException -[hidden] Tracker
 
 @enduml
