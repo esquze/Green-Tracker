@@ -3,7 +3,6 @@ package at.bal;
 // TODO
 // toString
 // CSVString
-// Logik von Ausstoß besprechen
 
 import java.util.Objects;
 

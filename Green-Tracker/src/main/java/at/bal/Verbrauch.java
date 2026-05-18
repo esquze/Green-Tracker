@@ -4,7 +4,6 @@ package at.bal;
 // toString
 // CSVString
 // compareTo
-// equals/hashCode
 // fixTaetigkeiten
 // AnzahlTaetigkeiten
 

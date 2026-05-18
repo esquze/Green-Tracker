@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 // TODO
-// Logik von Emission besprechen
 
 public class GreenTracker {
 
@@ -63,9 +62,42 @@ public class GreenTracker {
         return gesamt;
     }
 
-    public double berechneVerbrauchEmisson(String bezeichnung) {
-        return 0.0;
+    public double berechneVerbrauchEmisson(String type) throws GreenTrackerException {
+        double gesamt = 0.0;
+        switch (type) {
+            case "WasserVerbrauch", "GasVerbrauch", "StromVerbrauch", "DuschVerbrauch":
+                for (Verbrauch v: verbrauche) {
+                    if(v.getClass().getSimpleName().equals(type)) {
+                        gesamt += v.ausstoss();
+                    }
+                } break;
+            default:
+                throw new GreenTrackerException("Unexpected value" + type);
+        }
+        return gesamt;
     }
 
+    public double berechneGesamtPreis() {
+        double summe = 0.0;
+        for (Verbrauch v: verbrauche) {
+            summe += v.preis();
+        }
+        return summe;
+    }
+
+    public double berechneVerbrauchPreis(String type) throws GreenTrackerException {
+        double summe = 0.0;
+        switch (type) {
+            case "WasserVerbrauch", "GasVerbrauch", "StromVerbrauch", "DuschVerbrauch":
+                for (Verbrauch v: verbrauche) {
+                    if(v.getClass().getSimpleName().equals(type)) {
+                        summe += v.preis();
+                    }
+                } break;
+            default:
+                throw new GreenTrackerException("Unexpected value" + type);
+        }
+        return summe;
+    }
 
 }
