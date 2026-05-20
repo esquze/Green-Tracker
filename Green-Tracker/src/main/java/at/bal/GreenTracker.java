@@ -11,9 +11,9 @@ public class GreenTracker {
     private String name;
     List<Verbrauch> verbrauche;
 
-    public GreenTracker(String name, List<Verbrauch> verbrauche) throws GreenTrackerException {
+    public GreenTracker(String name) throws GreenTrackerException {
         setName(name);
-        verbrauche = new LinkedList<>();
+        this.verbrauche = new LinkedList<>();
     }
 
     public String getName() {
@@ -39,7 +39,7 @@ public class GreenTracker {
         if (verbrauch == null || verbrauche.isEmpty()) {
             return false;
         }
-        return verbrauche.add(verbrauch);
+        return verbrauche.remove(verbrauch);
     }
 
     public int entfernen(String bezeichnung) {
