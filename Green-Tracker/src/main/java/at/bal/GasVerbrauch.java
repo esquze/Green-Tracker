@@ -1,8 +1,5 @@
 package at.bal;
 
-// TODO
-// toString
-// CSVString
 
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +18,12 @@ public class GasVerbrauch extends Verbrauch {
         super(taetigkeit, dauer);
         setAktuellerGasPreis(aktuellerGasPreis);
         setKubikmeternVerbrauchGas(kubikmeternVerbrauchGas);
+    }
+
+    public GasVerbrauch(String[] lineParts) throws GreenTrackerException {
+        super(lineParts[1], Double.parseDouble(lineParts[2]));
+        setAktuellerGasPreis(Double.parseDouble(lineParts[3]));
+        setKubikmeternVerbrauchGas(Double.parseDouble(lineParts[4]));
     }
 
     public double getAktuellerGasPreis() {
@@ -67,4 +70,14 @@ public class GasVerbrauch extends Verbrauch {
     public int hashCode() {
         return Objects.hash(super.hashCode(), aktuellerGasPreis, kubikmeternVerbrauchGas);
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", akt. Gas Preis: " + aktuellerGasPreis + ", m³: " + kubikmeternVerbrauchGas;
+    }
+
+    public String toCsvString() {
+        return super.toCsvString() + ";" + aktuellerGasPreis + ";" + kubikmeternVerbrauchGas;
+    }
+
 }

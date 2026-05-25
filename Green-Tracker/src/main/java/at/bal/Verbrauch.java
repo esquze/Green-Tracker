@@ -1,20 +1,18 @@
 package at.bal;
 
 // TODO
-// toString
-// CSVString
 // compareTo
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Verbrauch {
+public abstract class Verbrauch implements Serializable, Comparable<Verbrauch> {
 
     private String taetigkeit; // Was man macht
     private double dauerMin; // Wie lang
 
     // Default-Konstruktor
     public Verbrauch() {
-
     }
 
     public Verbrauch(String taetigkeit, double dauerMin) throws GreenTrackerException {
@@ -48,6 +46,10 @@ public abstract class Verbrauch {
 
     public abstract double ausstoss();
 
+    public int compareTo(Verbrauch other) {
+        return this.getTaetigkeit().compareTo(other.getTaetigkeit());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -58,5 +60,22 @@ public abstract class Verbrauch {
     @Override
     public int hashCode() {
         return Objects.hash(taetigkeit, dauerMin);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()).append(": ");
+        sb.append("Taetigkeit: ").append(taetigkeit);
+        sb.append("Dauer: ").append(dauerMin);
+        return sb.toString();
+    }
+
+    public String toCsvString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(getClass().getSimpleName()).append(";");
+        sb.append(taetigkeit).append(";");
+        sb.append(dauerMin);
+        return sb.toString();
     }
 }

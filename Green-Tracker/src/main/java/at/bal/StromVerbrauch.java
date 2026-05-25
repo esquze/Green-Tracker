@@ -1,8 +1,5 @@
 package at.bal;
 
-// TODO
-// toString
-// CSVString
 
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +18,12 @@ public class StromVerbrauch extends Verbrauch {
         super(taetigkeit, dauer);
         setAktuellerStromPreis(aktuellerStromPreis);
         setKilowattProStunden(kilowattProStunden);
+    }
+
+    public StromVerbrauch(String[] lineParts) throws GreenTrackerException {
+        super(lineParts[1], Double.parseDouble(lineParts[2]));
+        setAktuellerStromPreis(Double.parseDouble(lineParts[3]));
+        setKilowattProStunden(Double.parseDouble(lineParts[4]));
     }
 
     public double getAktuellerStromPreis() {
@@ -68,4 +71,13 @@ public class StromVerbrauch extends Verbrauch {
         return Objects.hash(super.hashCode(), aktuellerStromPreis, kilowattProStunden);
     }
 
+
+    @Override
+    public String toString() {
+        return super.toString() + ", akt. Strom Preis: " + aktuellerStromPreis + ", kWH: " + kilowattProStunden;
+    }
+
+    public String toCsvString() {
+        return super.toCsvString() + ";" + aktuellerStromPreis + ";" + kilowattProStunden;
+    }
 }

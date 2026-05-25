@@ -1,8 +1,5 @@
 package at.bal;
 
-// TODO
-// toString
-// CSVString
 
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +18,12 @@ public class WasserVerbrauch extends Verbrauch {
         super(taetigkeit, dauer);
         setAktuellerWasserPreis(aktuellerWasserPreis);
         setKubikmeternVerbrauchWasser(kubikmeternVerbrauchWasser);
+    }
+
+    public WasserVerbrauch(String[] lineParts) throws GreenTrackerException {
+        super(lineParts[1], Double.parseDouble(lineParts[2]));
+        setAktuellerWasserPreis(Double.parseDouble(lineParts[3]));
+        setKubikmeternVerbrauchWasser(Double.parseDouble(lineParts[4]));
     }
 
     public double getAktuellerWasserPreis() {
@@ -67,4 +70,14 @@ public class WasserVerbrauch extends Verbrauch {
     public int hashCode() {
         return Objects.hash(super.hashCode(), aktuellerWasserPreis, kubikmeternVerbrauchWasser);
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", akt. Wasser Preis: " + aktuellerWasserPreis + ", m³: " + kubikmeternVerbrauchWasser;
+    }
+
+    public String toCsvString() {
+        return super.toCsvString() + ";" + aktuellerWasserPreis + ";" + kubikmeternVerbrauchWasser;
+    }
+
 }

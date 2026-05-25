@@ -1,17 +1,67 @@
 package at.bal;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static void main() {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(String.format("Hello and welcome!"));
+    static void main() throws GreenTrackerException {
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            IO.println("i = " + i);
+        // testSaveVerbrauch();
+        // testWriteVerbraucheCsv();
+        testReadVerbraucheCsv();
+
+    }
+
+
+    public static void testSaveVerbrauch() throws GreenTrackerException {
+        try {
+            System.out.println("----Test Save Verbrauch----");
+            GreenTracker greenTracker = new GreenTracker("Greentracker 1");
+            WasserVerbrauch w1 = new WasserVerbrauch("Haende waschen",2, 0.5, 20);
+            GasVerbrauch g1 = new GasVerbrauch("Heizen",120,1,50);
+
+            greenTracker.hinzufuegen(w1);
+            greenTracker.hinzufuegen(g1);
+
+            greenTracker.save();
+            System.out.println("Verbrauch gespeichert");
+        } catch (GreenTrackerException e) {
+            System.out.println("Unerwartete Exception: " + e.getMessage());
         }
     }
+
+    public static void testWriteVerbraucheCsv() {
+        try {
+            System.out.println("----Test Write Verbrauche Csv----");
+            GreenTracker greenTracker = new GreenTracker("Greentracker 1");
+            WasserVerbrauch w1 = new WasserVerbrauch("Haende waschen",2, 0.5, 20);
+            GasVerbrauch g1 = new GasVerbrauch("Heizen",120,1,50);
+            StromVerbrauch s1 = new StromVerbrauch("PC", 300,3,150);
+
+            greenTracker.hinzufuegen(w1);
+            greenTracker.hinzufuegen(g1);
+            greenTracker.hinzufuegen(s1);
+
+            greenTracker.writeVerbraucheToCsv();
+            System.out.println("Export erfolgreich");
+        } catch (GreenTrackerException e) {
+            System.out.println("Unerwartete Exception: " + e.getMessage());
+        }
+    }
+
+
+
+    public static void testReadVerbraucheCsv() {
+        try {
+            System.out.println("----Test Read Verbrauche Csv----");
+
+            GreenTracker g2 = new GreenTracker("Greentracker 2");
+
+            g2.readVerbraucheFromCsv();
+            System.out.println(g2);
+
+            System.out.println("Import erfolgreich");
+        } catch (GreenTrackerException e) {
+            System.out.println("Unerwartete Exception: " + e.getMessage());
+        }
+    }
+
+
 }
