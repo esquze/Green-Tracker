@@ -1,6 +1,7 @@
 package at.bal;
 
 import java.io.*;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +16,8 @@ public class GreenTracker {
         this.verbrauche = new LinkedList<>();
     }
 
-    public Verbrauch getVerbauch(int index) {
+    public Verbrauch getVerbauch(int index) throws GreenTrackerException {
+        if (index < 0 || index > verbrauche.size()) throw new GreenTrackerException("Error index!");
         return verbrauche.get(index);
     }
 
@@ -24,17 +26,17 @@ public class GreenTracker {
     }
 
     public void setName(String name) throws GreenTrackerException {
-        if (name == null || name.isEmpty()) {
+        if (name == null || name.isBlank()) {
             throw new GreenTrackerException("Fehler: Name darf nicht null oder leer sein");
         }
         this.name = name;
     }
 
-    public void hinzufuegen(Verbrauch verbrauch) throws GreenTrackerException {
+    public boolean hinzufuegen(Verbrauch verbrauch) throws GreenTrackerException {
         if (verbrauch != null && !verbrauche.contains(verbrauch)) {
-            verbrauche.add(verbrauch);
+            return verbrauche.add(verbrauch);
         } else {
-            throw new GreenTrackerException("Fehler: Verbrauch ist null oder exestiert schon");
+            return false;
         }
     }
 
@@ -45,7 +47,8 @@ public class GreenTracker {
         return verbrauche.remove(verbrauch);
     }
 
-    public int entfernen(String bezeichnung) {
+    public int entfernen(String bezeichnung) throws GreenTrackerException {
+        if (bezeichnung == null || bezeichnung.isBlank()) throw new GreenTrackerException("Error: entfernen");
         int anzahl = 0;
         Iterator<Verbrauch> iterator = verbrauche.iterator();
         while (iterator.hasNext()) {
@@ -66,6 +69,7 @@ public class GreenTracker {
     }
 
     public double berechneVerbrauchEmisson(String type) throws GreenTrackerException {
+        if (type == null) throw new GreenTrackerException("Error type ist null");
         double gesamt = 0.0;
         switch (type) {
             case "WasserVerbrauch", "GasVerbrauch", "StromVerbrauch", "DuschVerbrauch":
@@ -89,6 +93,7 @@ public class GreenTracker {
     }
 
     public double berechneVerbrauchPreis(String type) throws GreenTrackerException {
+        if (type == null) throw new GreenTrackerException("Error null");
         double summe = 0.0;
         switch (type) {
             case "WasserVerbrauch", "GasVerbrauch", "StromVerbrauch", "DuschVerbrauch":
@@ -103,7 +108,8 @@ public class GreenTracker {
         return summe;
     }
 
-    public int anzahlTaetigkeiten(String taetigkeit) {
+    public int anzahlTaetigkeiten(String taetigkeit) throws GreenTrackerException {
+        if (taetigkeit == null || taetigkeit.isBlank()) throw new GreenTrackerException("Error: leer oder null");
         int anzahl = 0;
         for (Verbrauch v: verbrauche) {
             if (v.getTaetigkeit().equals(taetigkeit)) {
@@ -118,7 +124,7 @@ public class GreenTracker {
     }
 
     public void sortierenNachTaetigkeit() {
-        verbrauche.sort(((o1, o2) -> o1.getTaetigkeit().compareTo(o2.getTaetigkeit())));
+        verbrauche.sort((Comparator.comparing(Verbrauch::getTaetigkeit)));
     }
 
     public void save () {
