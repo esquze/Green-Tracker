@@ -38,8 +38,8 @@ class GreenTrackerTest {
 
     @org.junit.jupiter.api.Test
     void getName() {
-     assertEquals("Greentracker 1", greenTracker.getName());
-     assertNotEquals("Falscher Name", greenTracker.getName());
+        assertEquals("Greentracker 1", greenTracker.getName());
+        assertNotEquals("Falscher Name", greenTracker.getName());
     }
 
     @org.junit.jupiter.api.Test
