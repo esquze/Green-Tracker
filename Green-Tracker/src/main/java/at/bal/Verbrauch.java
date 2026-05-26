@@ -72,7 +72,7 @@ public abstract class Verbrauch implements Serializable, Comparable<Verbrauch> {
     }
 
     public String toCsvString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName()).append(";");
         sb.append(taetigkeit).append(";");
         sb.append(dauerMin);
