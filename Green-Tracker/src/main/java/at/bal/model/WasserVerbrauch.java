@@ -1,5 +1,4 @@
-package at.bal;
-
+package at.bal.model;
 
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +12,7 @@ public class WasserVerbrauch extends Verbrauch {
 
     private double aktuellerWasserPreis;
     private double kubikmeternVerbrauchWasser;
+    private static final double EMISSIONSFAKTOR = 0.34;
 
     public WasserVerbrauch(String taetigkeit, double dauer, double aktuellerWasserPreis, double kubikmeternVerbrauchWasser) throws GreenTrackerException {
         super(taetigkeit, dauer);
@@ -21,9 +21,13 @@ public class WasserVerbrauch extends Verbrauch {
     }
 
     public WasserVerbrauch(String[] lineParts) throws GreenTrackerException {
-        super(lineParts[1], Double.parseDouble(lineParts[2]));
-        setAktuellerWasserPreis(Double.parseDouble(lineParts[3]));
-        setKubikmeternVerbrauchWasser(Double.parseDouble(lineParts[4]));
+        super(lineParts);
+        try {
+            setAktuellerWasserPreis(Double.parseDouble(lineParts[3]));
+            setKubikmeternVerbrauchWasser(Double.parseDouble(lineParts[4]));
+        } catch (NumberFormatException e) {
+            System.out.println("Error Wasserverbrauch import: " + e.getMessage());
+        }
     }
 
     public double getAktuellerWasserPreis() {
@@ -56,6 +60,11 @@ public class WasserVerbrauch extends Verbrauch {
     @Override
     public double ausstoss() {
         return kubikmeternVerbrauchWasser * getDauerMin();
+    }
+
+    @Override
+    public double co2Fussabdruck() {
+        return getKubikmeternVerbrauchWasser() * EMISSIONSFAKTOR;
     }
 
     @Override

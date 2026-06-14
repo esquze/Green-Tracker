@@ -1,4 +1,4 @@
-package at.bal;
+package at.bal.model;
 
 // TODO
 // Setter bei array konstruktor
@@ -24,7 +24,9 @@ public class DuschVerbrauch extends WasserVerbrauch {
 
 
     public DuschVerbrauch(String[] lineParts) throws GreenTrackerException {
-        super(lineParts[1], Double.parseDouble(lineParts[2]), Double.parseDouble(lineParts[3]), Double.parseDouble(lineParts[4]));
+        super(lineParts);
+        String[] gasParts = { "GasVerbrauch", lineParts[5], lineParts[6], lineParts[7], lineParts[8] };
+        setZugeordneterGasVerbrauch(new GasVerbrauch(gasParts));
     }
 
     public GasVerbrauch getZugeordneterGasVerbrauch() {
@@ -61,6 +63,11 @@ public class DuschVerbrauch extends WasserVerbrauch {
         return super.preis() + zugeordneterGasVerbrauch.preis();
     }
 
+    @Override
+    public double co2Fussabdruck() {
+        return super.co2Fussabdruck()
+                + getZugeordneterGasVerbrauch().co2Fussabdruck();
+    }
 
     @Override
     public String toString() {
@@ -68,7 +75,11 @@ public class DuschVerbrauch extends WasserVerbrauch {
     }
 
     public String toCsvString() {
-        return super.toCsvString() + ";" + zugeordneterGasVerbrauch;
+        return super.toCsvString()
+                + ";" + zugeordneterGasVerbrauch.getTaetigkeit()
+                + ";" + zugeordneterGasVerbrauch.getDauerMin()
+                + ";" + zugeordneterGasVerbrauch.getAktuellerGasPreis()
+                + ";" + zugeordneterGasVerbrauch.getKubikmeternVerbrauchGas();
     }
 
 }

@@ -1,5 +1,7 @@
 package at.bal;
 
+import at.bal.model.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GreenTrackerTest {
@@ -10,7 +12,7 @@ class GreenTrackerTest {
     private StromVerbrauch s1;
 
     @org.junit.jupiter.api.BeforeEach
-    void setUp() {
+    void setUp() throws GreenTrackerException {
         try {
             greenTracker = new GreenTracker("Greentracker 1");
             w1 = new WasserVerbrauch("Haende waschen",2, 0.5, 20);
@@ -21,7 +23,7 @@ class GreenTrackerTest {
             greenTracker.hinzufuegen(g1);
 
         } catch (GreenTrackerException e) {
-            throw new RuntimeException(e);
+            throw new GreenTrackerException(e.getMessage());
         }
     }
 
@@ -31,9 +33,9 @@ class GreenTrackerTest {
 
     @org.junit.jupiter.api.Test
     void getVerbauch() throws GreenTrackerException {
-        assertEquals(greenTracker.getVerbauch(0),w1);
-        assertThrows(GreenTrackerException.class, () -> greenTracker.getVerbauch(100));
-        assertThrows(GreenTrackerException.class, () -> greenTracker.getVerbauch(-1));
+        assertEquals(greenTracker.getVerbrauch(0),w1);
+        assertThrows(GreenTrackerException.class, () -> greenTracker.getVerbrauch(100));
+        assertThrows(GreenTrackerException.class, () -> greenTracker.getVerbrauch(-1));
     }
 
     @org.junit.jupiter.api.Test

@@ -1,5 +1,4 @@
-package at.bal;
-
+package at.bal.model;
 
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +12,8 @@ public class StromVerbrauch extends Verbrauch {
 
     private double aktuellerStromPreis;
     private double kilowattProStunden;
+    private static final double EMISSIONSFAKTOR = 0.158;
+
 
     public StromVerbrauch(String taetigkeit, double dauer, double aktuellerStromPreis, double kilowattProStunden) throws GreenTrackerException {
         super(taetigkeit, dauer);
@@ -21,9 +22,13 @@ public class StromVerbrauch extends Verbrauch {
     }
 
     public StromVerbrauch(String[] lineParts) throws GreenTrackerException {
-        super(lineParts[1], Double.parseDouble(lineParts[2]));
-        setAktuellerStromPreis(Double.parseDouble(lineParts[3]));
-        setKilowattProStunden(Double.parseDouble(lineParts[4]));
+        super(lineParts);
+        try {
+            setAktuellerStromPreis(Double.parseDouble(lineParts[3]));
+            setKilowattProStunden(Double.parseDouble(lineParts[4]));
+        } catch (NumberFormatException e) {
+            System.out.println("Error Stromverbrauch import: " + e.getMessage());
+        }
     }
 
     public double getAktuellerStromPreis() {
@@ -56,6 +61,11 @@ public class StromVerbrauch extends Verbrauch {
     @Override
     public double ausstoss() {
         return kilowattProStunden * getDauerMin();
+    }
+
+    @Override
+    public double co2Fussabdruck() {
+        return getKilowattProStunden() * EMISSIONSFAKTOR;
     }
 
     @Override

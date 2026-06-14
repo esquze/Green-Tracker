@@ -1,24 +1,27 @@
-package at.bal;
-
+package at.bal.model;
 import java.io.*;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.time.LocalDate;
 
 public class GreenTracker {
 
     private String name;
     List<Verbrauch> verbrauche;
+    private static final double REFERENZ_PRO_JAHR = 2700.0;
 
     public GreenTracker(String name) throws GreenTrackerException {
         setName(name);
         this.verbrauche = new LinkedList<>();
     }
 
-    public Verbrauch getVerbauch(int index) throws GreenTrackerException {
+    public Verbrauch getVerbrauch(int index) throws GreenTrackerException {
         if (index < 0 || index > verbrauche.size()) throw new GreenTrackerException("Error index!");
         return verbrauche.get(index);
+    }
+
+    public List<Verbrauch> getVerbrauche() {
+        return verbrauche;
     }
 
     public String getName() {
@@ -119,6 +122,28 @@ public class GreenTracker {
         return anzahl;
     }
 
+    public double berechneGesamtCo2() {
+        double sum = 0;
+        for (Verbrauch verbrauch : verbrauche) {
+            sum += verbrauch.co2Fussabdruck();
+        }
+        return sum;
+    }
+
+    public String co2Bewertung(double gesamtCo2) throws GreenTrackerException {
+        double anzTage = ChronoUnit.DAYS.between(LocalDate.of(2026, 1, 1), LocalDate.now());
+        if (anzTage <= 0) {
+            throw new GreenTrackerException("Division by 0 nicht möglich");
+        }
+        double proTag = gesamtCo2 / anzTage;
+        double referenzProTag = REFERENZ_PRO_JAHR / 365.0;
+        double verhaeltnis = proTag / referenzProTag;
+
+        if (verhaeltnis < 0.7)  return "gut";
+        if (verhaeltnis < 1.2)  return "durchschnittlich";
+        return "schlecht";
+    }
+
     public void sortieren() {
         verbrauche.sort(null);
     }
@@ -127,58 +152,49 @@ public class GreenTracker {
         verbrauche.sort((Comparator.comparing(Verbrauch::getTaetigkeit)));
     }
 
-    public void save () {
-        String filepath = "src/main/resources/greentracker.ser";
+    public void save () throws GreenTrackerException {
+        String filepath = "data/greentracker.ser";
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filepath))) {
             oos.writeObject(verbrauche);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new GreenTrackerException("Error: Save + " + e.getMessage());
         }
     }
 
-    public void writeVerbraucheToCsv() {
-        String filepath = "src/main/resources/greentracker.csv";
+    public void load() throws GreenTrackerException {
+        String filepath = "data/greentracker.ser";
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filepath))) {
+            verbrauche = (List<Verbrauch>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new GreenTrackerException(e.getMessage());
+        }
+    }
+
+    public void writeVerbraucheToCsv() throws GreenTrackerException {
+        String filepath = "data/greentracker.csv";
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath))) {
             bw.write(toCsvString());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new GreenTrackerException("Error: Export Csv" + e.getMessage());
         }
     }
 
-    public void readVerbraucheFromCsv() {
-        String filepath = "src/main/resources/greentracker.csv";
+    public void readVerbraucheFromCsv() throws GreenTrackerException {
+        String filepath = "data/greentracker.csv";
         try(BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line = br.readLine();
             while (line != null && !line.isBlank()) {
                 String[] lineParts = line.split(";");
                 if (lineParts.length >= 4) {
-                    if (lineParts[0].trim().equals("WasserVerbrauch")) {
-                        try {
-                            hinzufuegen(new WasserVerbrauch(lineParts));
-                        } catch (GreenTrackerException e) {
-                            throw new RuntimeException(e);
+                    try {
+                        switch (lineParts[0].trim()) {
+                            case "WasserVerbrauch" -> hinzufuegen(new WasserVerbrauch(lineParts));
+                            case "StromVerbrauch" -> hinzufuegen(new StromVerbrauch(lineParts));
+                            case "GasVerbrauch" -> hinzufuegen(new GasVerbrauch(lineParts));
+                            case "DuschVerbrauch" -> hinzufuegen(new DuschVerbrauch(lineParts));
                         }
-                    }
-                    if (lineParts[0].trim().equals("StromVerbrauch")) {
-                        try {
-                            hinzufuegen(new StromVerbrauch(lineParts));
-                        } catch (GreenTrackerException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    if (lineParts[0].trim().equals("GasVerbrauch")) {
-                        try {
-                            hinzufuegen(new GasVerbrauch(lineParts));
-                        } catch (GreenTrackerException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    if (lineParts[0].trim().equals("DuschVerbrauch")) {
-                        try {
-                            hinzufuegen(new DuschVerbrauch(lineParts));
-                        } catch (GreenTrackerException e) {
-                            throw new RuntimeException(e);
-                        }
+                    } catch (GreenTrackerException e) {
+                        throw new GreenTrackerException(e.getMessage());
                     }
                 } else {
                     System.out.println("Datei ist leer");
@@ -187,7 +203,7 @@ public class GreenTracker {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new GreenTrackerException(e.getMessage());
         }
     }
 
@@ -196,7 +212,7 @@ public class GreenTracker {
         sb.append("Greentracker ").append(name).append("\n");
         int anzahl = verbrauche.size();
         if (anzahl > 0) {
-            sb.append("Anzahl der Verbauche: ").append(anzahl).append("\n");
+            sb.append("Anzahl der Verbrauche: ").append(anzahl).append("\n");
             for (int i = 0; i < anzahl; i++)
                 sb.append(verbrauche.get(i).toString()).append("\n");
         } else {
@@ -212,7 +228,4 @@ public class GreenTracker {
         }
         return sb.toString();
     }
-
-
-
 }

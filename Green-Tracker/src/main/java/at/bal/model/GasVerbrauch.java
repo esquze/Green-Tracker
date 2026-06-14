@@ -1,5 +1,4 @@
-package at.bal;
-
+package at.bal.model;
 
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +12,8 @@ public class GasVerbrauch extends Verbrauch {
 
     private double aktuellerGasPreis;
     private double kubikmeternVerbrauchGas;
+    private static final double EMISSIONSFAKTOR = 2.0;
+
 
     public GasVerbrauch(String taetigkeit, double dauer, double aktuellerGasPreis, double kubikmeternVerbrauchGas) throws GreenTrackerException {
         super(taetigkeit, dauer);
@@ -21,9 +22,13 @@ public class GasVerbrauch extends Verbrauch {
     }
 
     public GasVerbrauch(String[] lineParts) throws GreenTrackerException {
-        super(lineParts[1], Double.parseDouble(lineParts[2]));
-        setAktuellerGasPreis(Double.parseDouble(lineParts[3]));
-        setKubikmeternVerbrauchGas(Double.parseDouble(lineParts[4]));
+        super(lineParts);
+        try {
+            setAktuellerGasPreis(Double.parseDouble(lineParts[3]));
+            setKubikmeternVerbrauchGas(Double.parseDouble(lineParts[4]));
+        } catch (NumberFormatException e) {
+            System.out.println("Error Gasverbrauch import: " + e.getMessage());
+        }
     }
 
     public double getAktuellerGasPreis() {
@@ -56,6 +61,11 @@ public class GasVerbrauch extends Verbrauch {
     @Override
     public double ausstoss() {
         return kubikmeternVerbrauchGas * getDauerMin();
+    }
+
+    @Override
+    public double co2Fussabdruck() {
+        return getKubikmeternVerbrauchGas() * EMISSIONSFAKTOR;
     }
 
     @Override

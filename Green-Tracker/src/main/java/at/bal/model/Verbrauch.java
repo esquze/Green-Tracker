@@ -1,5 +1,4 @@
-package at.bal;
-
+package at.bal.model;
 // TODO
 // compareTo
 
@@ -18,6 +17,15 @@ public abstract class Verbrauch implements Serializable, Comparable<Verbrauch> {
     public Verbrauch(String taetigkeit, double dauerMin) throws GreenTrackerException {
         setTaetigkeit(taetigkeit);
         setDauerMin(dauerMin);
+    }
+
+    public Verbrauch(String[] lineParts) throws GreenTrackerException {
+        try {
+            setTaetigkeit(lineParts[1]);
+            setDauerMin(Double.parseDouble(lineParts[2]));
+        } catch (NumberFormatException e) {
+            System.out.println("Error beim Verbrauch import: " + e.getMessage());
+        }
     }
 
     public String getTaetigkeit() {
@@ -45,6 +53,8 @@ public abstract class Verbrauch implements Serializable, Comparable<Verbrauch> {
     public abstract double preis();
 
     public abstract double ausstoss();
+
+    public abstract double co2Fussabdruck();
 
     public int compareTo(Verbrauch other) {
         return this.getTaetigkeit().compareTo(other.getTaetigkeit());

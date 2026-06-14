@@ -1,16 +1,15 @@
-package at.bal;
-
+package at.bal.model;
 public class Main {
-    static void main() throws GreenTrackerException {
+    static void main() {
 
-        // testSaveVerbrauch();
-        // testWriteVerbraucheCsv();
+        testSaveVerbrauch();
+        testWriteVerbraucheCsv();
         testReadVerbraucheCsv();
 
     }
 
 
-    public static void testSaveVerbrauch() throws GreenTrackerException {
+    public static void testSaveVerbrauch() {
         try {
             System.out.println("----Test Save Verbrauch----");
             GreenTracker greenTracker = new GreenTracker("Greentracker 1");
@@ -34,10 +33,13 @@ public class Main {
             WasserVerbrauch w1 = new WasserVerbrauch("Haende waschen",2, 0.5, 20);
             GasVerbrauch g1 = new GasVerbrauch("Heizen",120,1,50);
             StromVerbrauch s1 = new StromVerbrauch("PC", 300,3,150);
+            DuschVerbrauch d1 = new DuschVerbrauch("Dusche", 15,3,150,g1);
+
 
             greenTracker.hinzufuegen(w1);
             greenTracker.hinzufuegen(g1);
             greenTracker.hinzufuegen(s1);
+            greenTracker.hinzufuegen(d1);
 
             greenTracker.writeVerbraucheToCsv();
             System.out.println("Export erfolgreich");
