@@ -1,8 +1,3 @@
-# Green-Tracker
-Projekt von Rodion Bal, Alexander Biegel, Jakob Cezawa 
+# Greentracker
 
-Alex TODOs: Save, CSV, toStrings und Sort
-
-![Preview](greentracker.png)
-
-
+Projekt von Rodion Bal, Alexander Biegel, Jakob Cezawa

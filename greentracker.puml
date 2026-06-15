@@ -10,124 +10,148 @@ class GreenTrackerException
 
 Exception <|-- GreenTrackerException
 
-interface Comparable<Verbrauch>
+interface Serializable
+interface "Comparable<Verbrauch>" as Comparable
 {
 + {abstract} compareTo(o: Verbrauch): int
 }
 
+Serializable <|.. Verbrauch
 Comparable <|.. Verbrauch
 
 abstract class Verbrauch
 {
 - taetigkeit: String
-- dauer: double
-- anzahlTaetigkeit: int
+- dauerMin: double
 + Verbrauch()
-+ Verbrauch(taetigkeit: String, dauer: double, anzahlTaetigkeit: int)
++ Verbrauch(taetigkeit: String, dauerMin: double)
++ Verbrauch(lineParts: String[])
 + getTaetigkeit(): String
-+ getDauer(): double
-+ getAnzahlTaetigkeit(): int
++ getDauerMin(): double
 + setTaetigkeit(taetigkeit: String): void
-+ setDauer(dauer: double): void
-+ setAnzahlTaetigkeit(anzahlTaetigkeit: int): void
++ setDauerMin(dauerMin: double): void
 + {abstract} preis(): double
-+ {abstract} ausstoß(): double
-+ toString(): String
-+ {abstract} toCSVString(): String
-+ compareTo(o: Verbrauch): int
++ {abstract} ausstoss(): double
++ {abstract} co2Fussabdruck(): double
++ compareTo(other: Verbrauch): int
 + equals(o: Object): boolean
 + hashCode(): int
++ toString(): String
++ toCsvString(): String
 }
 
-class Wasserverbrauch extends Verbrauch
+class WasserVerbrauch extends Verbrauch
 {
++ {static} vorgeschlageneTaetigkeiten: List<String>
+- {static} EMISSIONSFAKTOR: double = 0.34
 - aktuellerWasserPreis: double
 - kubikmeternVerbrauchWasser: double
-+ Wasserverbrauch(taetigkeit: String, dauer: double, anzahlTaetigkeit: int, aktuellerWasserPreis: double, kubikmeternVerbrauchWasser: double)
++ WasserVerbrauch(taetigkeit: String, dauer: double, aktuellerWasserPreis: double, kubikmeternVerbrauchWasser: double)
++ WasserVerbrauch(lineParts: String[])
 + getAktuellerWasserPreis(): double
-+ getKubikmeternVerbrauchWasser(): double
-+ preis(): double
-+ ausstoß(): double
 + setAktuellerWasserPreis(aktuellerWasserPreis: double): void
++ getKubikmeternVerbrauchWasser(): double
 + setKubikmeternVerbrauchWasser(kubikmeternVerbrauchWasser: double): void
-+ toString(): String
-+ toCSVString(): String
++ preis(): double
++ ausstoss(): double
++ co2Fussabdruck(): double
 + equals(o: Object): boolean
 + hashCode(): int
++ toString(): String
++ toCsvString(): String
 }
 
 class GasVerbrauch extends Verbrauch
 {
++ {static} vorgeschlageneTaetigkeiten: List<String>
+- {static} EMISSIONSFAKTOR: double = 2.0
 - aktuellerGasPreis: double
 - kubikmeternVerbrauchGas: double
-+ GasVerbrauch(taetigkeit: String, dauer: double, anzahlTaetigkeit: int, aktuellerGasPreis: double, kubikmeternVerbrauchGas: double)
++ GasVerbrauch(taetigkeit: String, dauer: double, aktuellerGasPreis: double, kubikmeternVerbrauchGas: double)
++ GasVerbrauch(lineParts: String[])
 + getAktuellerGasPreis(): double
-+ getKubikmeternVerbrauchGas(): double
-+ preis(): double
-+ ausstoß(): double
 + setAktuellerGasPreis(aktuellerGasPreis: double): void
++ getKubikmeternVerbrauchGas(): double
 + setKubikmeternVerbrauchGas(kubikmeternVerbrauchGas: double): void
-+ toString(): String
-+ toCSVString(): String
++ preis(): double
++ ausstoss(): double
++ co2Fussabdruck(): double
 + equals(o: Object): boolean
 + hashCode(): int
++ toString(): String
++ toCsvString(): String
 }
 
 class StromVerbrauch extends Verbrauch
 {
++ {static} vorgeschlageneTaetigkeiten: List<String>
+- {static} EMISSIONSFAKTOR: double = 0.158
 - aktuellerStromPreis: double
-- kilowattstunden: double
-+ StromVerbrauch(taetigkeit: String, dauer: double, anzahlTaetigkeit: int, aktuellerStromPreis: double, kilowattstunden: double)
+- kilowattProStunden: double
++ StromVerbrauch(taetigkeit: String, dauer: double, aktuellerStromPreis: double, kilowattProStunden: double)
++ StromVerbrauch(lineParts: String[])
 + getAktuellerStromPreis(): double
-+ getKilowattstunden(): double
-+ preis(): double
-+ ausstoß(): double
 + setAktuellerStromPreis(aktuellerStromPreis: double): void
-+ setKilowattstunden(kilowattstunden: double): void
-+ toString(): String
-+ toCSVString(): String
++ getKilowattProStunden(): double
++ setKilowattProStunden(kilowattProStunden: double): void
++ preis(): double
++ ausstoss(): double
++ co2Fussabdruck(): double
 + equals(o: Object): boolean
 + hashCode(): int
++ toString(): String
++ toCsvString(): String
 }
 
-class Duschverbrauch extends Wasserverbrauch
+class DuschVerbrauch extends WasserVerbrauch
 {
++ {static} vorgeschlageneTaetigkeiten: List<String>
 - zugeordneterGasVerbrauch: GasVerbrauch
-+ Duschverbrauch(taetigkeit: String, dauer: double, anzahlTaetigkeit: int, aktuellerWasserPreis: double, kubikmeternVerbrauchWasser: double, zugeordneterGasVerbrauch: GasVerbrauch)
++ DuschVerbrauch(taetigkeit: String, dauer: double, aktuellerWasserPreis: double, kubikmeternVerbrauchWasser: double, zugeordneterGasVerbrauch: GasVerbrauch)
++ DuschVerbrauch(lineParts: String[])
 + getZugeordneterGasVerbrauch(): GasVerbrauch
 + setZugeordneterGasVerbrauch(zugeordneterGasVerbrauch: GasVerbrauch): void
 + preis(): double
-+ ausstoß(): double
-+ toString(): String
-+ toCSVString(): String
++ ausstoss(): double
++ co2Fussabdruck(): double
 + equals(o: Object): boolean
 + hashCode(): int
++ toString(): String
++ toCsvString(): String
 }
 
 class GreenTracker
 {
 - name: String
-- verbrauche: List<Verbrauch>
+~ verbrauche: List<Verbrauch>
+- {static} REFERENZ_PRO_JAHR: double = 2700.0
 + GreenTracker(name: String)
 + getVerbrauch(index: int): Verbrauch
++ getVerbrauche(): List<Verbrauch>
++ getName(): String
++ setName(name: String): void
 + hinzufuegen(verbrauch: Verbrauch): boolean
 + entfernen(verbrauch: Verbrauch): boolean
 + entfernen(bezeichnung: String): int
-+ berechneGesamtEmisson(): double
-+ berechneVerbrauchEmisson(): double
++ berechneGesamtEmission(): double
++ berechneVerbrauchEmisson(type: String): double
 + berechneGesamtPreis(): double
-+ berechneVerbrauchPreis(): double
-+ writeVerbraucheToCSV(): void
-+ save(): void
-+ readVerbraucheFromCSV(): void
++ berechneVerbrauchPreis(type: String): double
++ anzahlTaetigkeiten(taetigkeit: String): int
++ berechneGesamtCo2(): double
++ co2Bewertung(gesamtCo2: double): String
 + sortieren(): void
-+ sortierenNachBezeichnung(): void
++ sortierenNachTaetigkeit(): void
++ save(): void
++ load(): void
++ writeVerbraucheToCsv(): void
++ readVerbraucheFromCsv(): void
 + toString(): String
-+ toCSVString(): String
++ toCsvString(): String
 }
 
-GreenTracker --> Verbrauch
-Duschverbrauch --> GasVerbrauch
+GreenTracker --> "*" Verbrauch
+DuschVerbrauch --> GasVerbrauch
 
 together {
 class Verbrauch
@@ -139,6 +163,6 @@ together {
 class GreenTracker
 class GreenTrackerException
 }
-GreenTrackerException -[hidden] Tracker
+GreenTrackerException -[hidden] GreenTracker
 
 @enduml
